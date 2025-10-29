@@ -19,15 +19,20 @@ from pprint import pprint
 def parse_topology(filepath: str):
     """
     Reads a topology.txt file and returns its structure as a dict.
-    Format (per assignment spec):
+    Format:
         <num-servers>
         <num-neighbors>
         <server-ID> <server-IP> <server-port>
         ...
         <server-ID1> <server-ID2> <cost>
+    Lines starting with '#' are ignored.
     """
     with open(filepath, "r") as f:
-        lines = [line.strip() for line in f if line.strip()]
+        # Remove blank lines and comment lines
+        lines = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+
+    if len(lines) < 2:
+        raise ValueError("Topology file must have at least 2 lines (num_servers and num_neighbors)")
 
     num_servers = int(lines[0])
     num_neighbors = int(lines[1])
@@ -93,11 +98,7 @@ def display_routing_table(routing_table: dict):
     for dest in sorted(routing_table.keys()):
         entry = routing_table[dest]
         nh = entry["next_hop"] if entry["next_hop"] is not None else "-"
-        cost = (
-            int(entry["cost"])
-            if entry["cost"] != math.inf
-            else "inf"
-        )
+        cost = int(entry["cost"]) if entry["cost"] != math.inf else "inf"
         print(f"{dest} {nh} {cost}")
 
 
