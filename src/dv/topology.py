@@ -1,13 +1,3 @@
-"""
-topology.py
-------------
-Role D: Topology & Tests
-• Parses a topology file.
-• Builds the initial routing table for a given server.
-• Provides a display helper that prints the table
-  in the same format expected by Role C (CLI & Commands).
-"""
-
 import math
 import os
 from pprint import pprint
@@ -17,16 +7,6 @@ from pprint import pprint
 # Parse the topology file
 # -------------------------------------------------------------
 def parse_topology(filepath: str):
-    """
-    Reads a topology.txt file and returns its structure as a dict.
-    Format:
-        <num-servers>
-        <num-neighbors>
-        <server-ID> <server-IP> <server-port>
-        ...
-        <server-ID1> <server-ID2> <cost>
-    Lines starting with '#' are ignored.
-    """
     with open(filepath, "r") as f:
         # Remove blank lines and comment lines
         lines = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
@@ -61,11 +41,6 @@ def parse_topology(filepath: str):
 # Build the initial routing table
 # -------------------------------------------------------------
 def build_routing_table(topology_data: dict, current_id: int):
-    """
-    Initializes the routing table for the given server.
-    Each entry looks like:
-        { destination_id: { "next_hop": X, "cost": Y } }
-    """
     routing_table = {}
     servers = topology_data["servers"]
     links = topology_data["links"]
@@ -91,10 +66,6 @@ def build_routing_table(topology_data: dict, current_id: int):
 # Display routing table (Role C compatible format)
 # -------------------------------------------------------------
 def display_routing_table(routing_table: dict):
-    """
-    Prints routing table entries in sorted order:
-        <destination-ID> <next-hop-ID> <cost>
-    """
     for dest in sorted(routing_table.keys()):
         entry = routing_table[dest]
         nh = entry["next_hop"] if entry["next_hop"] is not None else "-"
