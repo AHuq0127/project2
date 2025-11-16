@@ -4,6 +4,24 @@
 import socket
 import threading
 import time
+import json
+
+
+
+def create_udp_socket(ip, port, timeout=1.0):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind((ip, port))
+    s.settimeout(timeout)
+    return s
+
+def send_udp_packet(sock, addr, packet):
+    """packet is a Python dict; we JSON encode it here"""
+    try:
+        data = json.dumps(packet).encode('utf-8')
+        sock.sendto(data, addr)
+    except Exception as e:
+        print("send_udp_packet error:", e)
+
 
 class Network:
     def __init__(self, server_id, server_ip, server_port, interval, neighbors):
